@@ -1,17 +1,17 @@
-const connectDB = require('./db');
-const MediaItem = require('./models/MediaItem');
 require('dotenv').config();
+const express = require('express');
+const connectDB = require('./db');
+const authRoutes = require('./routes/auth');
 
-async function addTestItem() {
-  const item = new MediaItem({
-    type: 'youtube',
-    title: 'My first video',
-    url: 'https://youtube.com/watch?v=example',
-    artistOrChannel: 'Test Channel',
-  });
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  await item.save();
-  console.log('Test media item saved ✅');
-}
+// Підключення до бази даних
+connectDB();
 
-connectDB().then(addTestItem);
+// Підключення маршрутів
+app.use('/', authRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
